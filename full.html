@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentime</title>
+    <link rel="icon" type="image" href="logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #87CEEB;
+            --primary-dark: #5F9EA0;
+            --primary-light: #B0E0E6;
+            --secondary: #F0F8FF;
+            --text: #2F4F4F;
+            --text-light: #708090;
+            --accent: #FF6B6B;
+            --white: #FFFFFF;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 8px;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: none;
+            background: var(--white);
+            box-shadow: 0 2px 5px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .user-actions button {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .user-actions button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-actions button i {
+            margin-right: 5px;
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            display: flex;
+            margin-top: 25px;
+            gap: 25px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 25%;
+        }
+
+        .profile-card,
+        .quick-links {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-card:hover,
+        .quick-links:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            margin-right: 15px;
+        }
+
+        .profile-info h3 {
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--primary-dark);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .quick-links h3 {
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .quick-links h3 i {
+            margin-right: 8px;
+        }
+
+        .quick-links ul {
+            list-style: none;
+        }
+
+        .quick-links li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .quick-links li:hover {
+            color: var(--primary-dark);
+        }
+
+        .quick-links li:last-child {
+            border-bottom: none;
+        }
+
+        .quick-links li i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        /* Feed Styles */
+        .feed {
+            width: 50%;
+        }
+
+        .post-form {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .post-form textarea {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .post-form textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .post-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .add-ons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-on-btn {
+            background: var(--secondary);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--primary-dark);
+            transition: all 0.3s;
+        }
+
+        .add-on-btn:hover {
+            background: var(--primary-light);
+            transform: scale(1.1);
+        }
+
+        .visibility-options {
+            display: flex;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .visibility-options button {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: var(--secondary);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .visibility-options button i {
+            margin-right: 5px;
+        }
+
+        .visibility-options button.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .post-form button[type="submit"] {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .post-form button[type="submit"]:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .post-form button[type="submit"] i {
+            margin-right: 8px;
+        }
+
+        .post {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .post:hover {
+            transform: translateY(-3px);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid var(--primary-light);
+        }
+
+        .post-meta {
+            flex-grow: 1;
+        }
+
+        .post-author {
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .post-time,
+        .post-visibility {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .post-content {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .post-tag {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+            margin-bottom: 15px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            cursor: pointer;
+            color: var(--text-light);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .post-action:hover {
+            background: var(--secondary);
+            color: var(--primary-dark);
+        }
+
+        .post-action i {
+            margin-right: 8px;
+        }
+
+        /* Emoji Reactions */
+        .emoji-reactions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .emoji-btn {
+            background: var(--secondary);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .emoji-btn:hover {
+            transform: scale(1.2);
+            background: var(--primary-light);
+        }
+
+        /* Research Sidebar */
+        .research-sidebar {
+            width: 25%;
+        }
+
+        .research-tools,
+        .trending-research {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .research-tools:hover,
+        .trending-research:hover {
+            transform: translateY(-5px);
+        }
+
+        .research-tools h3,
+        .trending-research h3 {
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .research-tools h3 i,
+        .trending-research h3 i {
+            margin-right: 10px;
+        }
+
+        .research-filters {
+            margin-bottom: 15px;
+        }
+
+        .filter-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .filter-item:hover {
+            color: var(--primary-dark);
+        }
+
+        .filter-item i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .research-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .research-item:last-child {
+            border-bottom: none;
+        }
+
+        .research-item h4 {
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .research-item h4 i {
+            margin-right: 8px;
+        }
+
+        .research-meta {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .research-meta i {
+            margin-right: 5px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 12px;
+            width: 400px;
+            max-width: 90%;
+            padding: 25px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .modal-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .modal-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-light);
+        }
+
+        .modal-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .sidebar,
+            .feed,
+            .research-sidebar {
+                width: 100%;
+            }
+
+            .header-content {
+                flex-wrap: wrap;
+            }
+
+            .search-bar {
+                order: 3;
+                margin: 15px 0 0;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .user-actions button span {
+                display: none;
+            }
+
+            .user-actions button i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+
+            .post-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .visibility-options {
+                margin: 15px 0;
+            }
+
+            .post-form button[type="submit"] {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-globe-americas"></i>
+                    ResearchConnect
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for research, topics, or researchers...">
+                </div>
+                <div class="user-actions">
+                    <button><i class="fas fa-home"></i> <span>Home</span></button>
+                    <button><i class="fas fa-user"></i> <span>Profile</span></button>
+                    <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Left Sidebar -->
+            <div class="sidebar">
+
+                <div class="quick-links">
+                    <h3><i class="fas fa-link"></i> Research Shortcuts</h3>
+                    <ul>
+                        <li><i class="fas fa-book-open"></i> My Publications</li>
+                        <li><i class="fas fa-users"></i> Research Groups</li>
+                        <li><i class="fas fa-calendar-alt"></i> Academic Events</li>
+                        <li><i class="fas fa-graduation-cap"></i> Scholarships</li>
+                        <li><i class="fas fa-tools"></i> Methodology Resources</li>
+                        <li><i class="fas fa-database"></i> Research Database</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Center Feed -->
+            <div class="feed">
+                <div class="post-form">
+                    <form id="create-post">
+                        <textarea placeholder="Share your research, ideas, or findings..."></textarea>
+                        <div class="post-options">
+                            <div class="add-ons">
+                                <button type="button" class="add-on-btn" title="Add Photo">
+                                    <i class="fas fa-image"></i>
+                                </button>
+                                <button type="button" class="add-on-btn" title="Add Document">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                                <button type="button" class="add-on-btn" title="Add Poll">
+                                    <i class="fas fa-chart-bar"></i>
+                                </button>
+                            </div>
+                            <div class="visibility-options">
+                                <button type="button" class="active" data-visibility="public">
+                                    <i class="fas fa-globe-americas"></i> Public
+                                </button>
+                                <button type="button" data-visibility="private">
+                                    <i class="fas fa-lock"></i> Private
+                                </button>
+                            </div>
+                            <button type="submit">
+                                <i class="fas fa-paper-plane"></i> Post
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="post">
+                    <div class="post-header">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+                        <div class="post-meta">
+                            <div class="post-author">Dr. Michael Chen</div>
+                            <div class="post-time">Posted 3 hours ago · <span class="post-visibility"><i
+                                        class="fas fa-globe-americas"></i> Public</span></div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>Just published our latest research on the effects of mindfulness meditation on cognitive
+                            function in older adults. The results show significant improvement in attention and working
+                            memory after 8 weeks of practice.</p>
+                    </div>
+                    <div class="post-tags">
+                        <span class="post-tag">#Neuroscience</span>
+                        <span class="post-tag">#Aging</span>
+                        <span class="post-tag">#Meditation</span>
+                    </div>
+                    <div class="post-stats">
+                        <div><i class="fas fa-heart"></i> 42 likes</div>
+                        <div>12 comments · 8 shares</div>
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action like-btn">
+                            <i class="far fa-heart"></i> Like
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-comment"></i> Comment
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-share-square"></i> Share
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-bookmark"></i> Save
+                        </div>
+                    </div>
+                    <div class="emoji-reactions">
+                        <button class="emoji-btn">👍</button>
+                        <button class="emoji-btn">❤️</button>
+                        <button class="emoji-btn">😮</button>
+                        <button class="emoji-btn">👎</button>
+                    </div>
+                </div>
+
+                <div class="post">
+                    <div class="post-header">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User">
+                        <div class="post-meta">
+                            <div class="post-author">Sarah Johnson</div>
+                            <div class="post-time">Posted 1 day ago · <span class="post-visibility"><i
+                                        class="fas fa-lock"></i> Private</span></div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>Preliminary data from our lab suggests a potential breakthrough in renewable energy storage.
+                            Still need to verify these results before sharing publicly, but excited about the
+                            possibilities!</p>
+                    </div>
+                    <div class="post-tags">
+                        <span class="post-tag">#RenewableEnergy</span>
+                        <span class="post-tag">#EnergyStorage</span>
+                    </div>
+                    <div class="post-stats">
+                        <div><i class="fas fa-heart"></i> 28 likes</div>
+                        <div>7 comments · 3 shares</div>
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action like-btn">
+                            <i class="far fa-heart"></i> Like
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-comment"></i> Comment
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-share-square"></i> Share
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-bookmark"></i> Save
+                        </div>
+                    </div>
+                    <div class="emoji-reactions">
+                        <button class="emoji-btn">👍</button>
+                        <button class="emoji-btn">❤️</button>
+                        <button class="emoji-btn">😮</button>
+                        <button class="emoji-btn">👎</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Research Sidebar -->
+            <div class="research-sidebar">
+                <div class="research-tools">
+                    <h3><i class="fas fa-tools"></i> Research Tools</h3>
+                    <div class="research-filters">
+                        <div class="filter-item">
+                            <i class="fas fa-search"></i>
+                            <div>
+                                <strong>Search Databases</strong>
+                                <p>Access academic journals and publications</p>
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <i class="fas fa-quote-right"></i>
+                            <div>
+                                <strong>Citation Generator</strong>
+                                <p>Create citations in any format</p>
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <i class="fas fa-chart-line"></i>
+                            <div>
+                                <strong>Data Analysis</strong>
+                                <p>Statistical tools and visualization</p>
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <i class="fas fa-cloud-download-alt"></i>
+                            <div>
+                                <strong>Data Repository</strong>
+                                <p>Store and share research data</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trending-research">
+                    <h3><i class="fas fa-fire"></i> Trending Research</h3>
+                    <div class="research-item">
+                        <h4><i class="fas fa-brain"></i> AI in Healthcare</h4>
+                        <div class="research-meta">
+                            <i class="fas fa-file-alt"></i> 1,245 recent publications
+                        </div>
+                        <p>Exploring AI applications in diagnosis and treatment</p>
+                    </div>
+                    <div class="research-item">
+                        <h4><i class="fas fa-leaf"></i> Climate Change</h4>
+                        <div class="research-meta">
+                            <i class="fas fa-file-alt"></i> 982 recent publications
+                        </div>
+                        <p>New strategies for carbon capture and renewable energy</p>
+                    </div>
+                    <div class="research-item">
+                        <h4><i class="fas fa-dna"></i> CRISPR Gene Editing</h4>
+                        <div class="research-meta">
+                            <i class="fas fa-file-alt"></i> 876 recent publications
+                        </div>
+                        <p>Advances in precision genetic engineering</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login to ResearchConnect</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="modal-btn">Login</button>
+            </form>
+            <div class="modal-footer">
+                <p>Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signup-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create an Account</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-email">Email</label>
+                    <input type="email" id="new-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">Password</label>
+                    <input type="password" id="new-password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="modal-btn">Sign Up</button>
+            </form>
+            <div class="modal-footer">
+                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Database simulation
+        const database = {
+            users: [
+                { id: 1, name: "Dr. Jane Smith", email: "jane@example.com", password: "password123", avatar: "https://randomuser.me/api/portraits/women/44.jpg", title: "Neuroscience Researcher", institution: "Stanford University" },
+                { id: 2, name: "Dr. Michael Chen", email: "michael@example.com", password: "password123", avatar: "https://randomuser.me/api/portraits/men/32.jpg", title: "Cognitive Psychologist", institution: "Harvard University" },
+                { id: 3, name: "Sarah Johnson", email: "sarah@example.com", password: "password123", avatar: "https://randomuser.me/api/portraits/women/65.jpg", title: "Energy Researcher", institution: "MIT" }
+            ],
+            posts: [
+                { id: 1, userId: 2, content: "Just published our latest research on the effects of mindfulness meditation on cognitive function in older adults. The results show significant improvement in attention and working memory after 8 weeks of practice.", visibility: "public", tags: ["Neuroscience", "Aging", "Meditation"], likes: 42, comments: 12, shares: 8, timestamp: "3 hours ago" },
+                { id: 2, userId: 3, content: "Preliminary data from our lab suggests a potential breakthrough in renewable energy storage. Still need to verify these results before sharing publicly, but excited about the possibilities!", visibility: "private", tags: ["RenewableEnergy", "EnergyStorage"], likes: 28, comments: 7, shares: 3, timestamp: "1 day ago" }
+            ],
+            currentUser: null
+        };
+
+        // DOM Elements
+        const loginModal = document.getElementById('login-modal');
+        const signupModal = document.getElementById('signup-modal');
+        const showLoginBtn = document.getElementById('show-login');
+        const showSignupBtn = document.getElementById('show-signup');
+        const closeModalBtns = document.querySelectorAll('.close-modal');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const createPostForm = document.getElementById('create-post');
+        const postTextarea = document.querySelector('.post-form textarea');
+        const likeButtons = document.querySelectorAll('.like-btn');
+        const emojiButtons = document.querySelectorAll('.emoji-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Show Login Modal on page load
+        window.addEventListener('load', () => {
+            loginModal.style.display = 'flex';
+        });
+
+        // Switch between login and signup modals
+        showLoginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupModal.style.display = 'none';
+            loginModal.style.display = 'flex';
+        });
+
+        showSignupBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.style.display = 'none';
+            signupModal.style.display = 'flex';
+        });
+
+        // Close modals
+        closeModalBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+                signupModal.style.display = 'none';
+            });
+        });
+
+        // Login functionality
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const user = database.users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                database.currentUser = user;
+                loginModal.style.display = 'none';
+                updateUI();
+            } else {
+                alert('Invalid email or password');
+            }
+        });
+
+        // Signup functionality
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('new-email').value;
+            const password = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            // Check if user already exists
+            if (database.users.some(u => u.email === email)) {
+                alert('User with this email already exists');
+                return;
+            }
+
+            // Create new user
+            const newUser = {
+                id: database.users.length + 1,
+                name: fullname,
+                email: email,
+                password: password,
+                avatar: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 100)}.jpg`,
+                title: "Researcher",
+                institution: "University"
+            };
+
+            database.users.push(newUser);
+            database.currentUser = newUser;
+
+            signupModal.style.display = 'none';
+            updateUI();
+        });
+
+        // Create post functionality
+        createPostForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (!database.currentUser) {
+                alert('Please login to post');
+                return;
+            }
+
+            const content = postTextarea.value.trim();
+            if (!content) {
+                alert('Please write something to post');
+                return;
+            }
+
+            const visibility = document.querySelector('.visibility-options button.active').dataset.visibility;
+
+            // Create new post
+            const newPost = {
+                id: database.posts.length + 1,
+                userId: database.currentUser.id,
+                content: content,
+                visibility: visibility,
+                tags: extractTags(content),
+                likes: 0,
+                comments: 0,
+                shares: 0,
+                timestamp: "Just now"
+            };
+
+            database.posts.unshift(newPost);
+            addPostToFeed(newPost);
+
+            postTextarea.value = '';
+            alert('Post created successfully!');
+        });
+
+        // Like functionality
+        likeButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    this.style.color = '#FF6B6B';
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    this.style.color = '';
+                }
+            });
+        });
+
+        // Emoji reaction functionality
+        emojiButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                this.classList.toggle('active');
+                if (this.classList.contains('active')) {
+                    this.style.transform = 'scale(1.3)';
+                    this.style.backgroundColor = '#B0E0E6';
+                } else {
+                    this.style.transform = '';
+                    this.style.backgroundColor = '';
+                }
+            });
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', () => {
+            database.currentUser = null;
+            loginModal.style.display = 'flex';
+        });
+
+        // Helper functions
+        function updateUI() {
+            if (database.currentUser) {
+                const profileImg = document.querySelector('.profile-img');
+                const profileName = document.querySelector('.profile-info h3');
+                const profileTitle = document.querySelector('.profile-info p:first-child');
+                const profileInstitution = document.querySelector('.profile-info p:last-child');
+
+                profileImg.src = database.currentUser.avatar;
+                profileName.textContent = database.currentUser.name;
+                profileTitle.textContent = database.currentUser.title;
+                profileInstitution.textContent = database.currentUser.institution;
+            }
+        }
+
+        function extractTags(content) {
+            const tagRegex = /#(\w+)/g;
+            const tags = [];
+            let match;
+
+            while ((match = tagRegex.exec(content)) !== null) {
+                tags.push(match[1]);
+            }
+
+            return tags;
+        }
+
+        function addPostToFeed(post) {
+            const user = database.users.find(u => u.id === post.userId);
+
+            const postElement = document.createElement('div');
+            postElement.className = 'post';
+            postElement.innerHTML = `
+                <div class="post-header">
+                    <img src="${user.avatar}" alt="User">
+                    <div class="post-meta">
+                        <div class="post-author">${user.name}</div>
+                        <div class="post-time">Posted ${post.timestamp} · <span class="post-visibility"><i class="fas ${post.visibility === 'public' ? 'fa-globe-americas' : 'fa-lock'}"></i> ${post.visibility}</span></div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>${post.content}</p>
+                </div>
+                <div class="post-tags">
+                    ${post.tags.map(tag => `<span class="post-tag">#${tag}</span>`).join('')}
+                </div>
+                <div class="post-stats">
+                    <div><i class="fas fa-heart"></i> ${post.likes} likes</div>
+                    <div>${post.comments} comments · ${post.shares} shares</div>
+                </div>
+                <div class="post-actions">
+                    <div class="post-action like-btn">
+                        <i class="far fa-heart"></i> Like
+                    </div>
+                    <div class="post-action">
+                        <i class="far fa-comment"></i> Comment
+                    </div>
+                    <div class="post-action">
+                        <i class="far fa-share-square"></i> Share
+                    </div>
+                    <div class="post-action">
+                        <i class="far fa-bookmark"></i> Save
+                    </div>
+                </div>
+                <div class="emoji-reactions">
+                    <button class="emoji-btn">👍</button>
+                    <button class="emoji-btn">❤️</button>
+                    <button class="emoji-btn">😮</button>
+                    <button class="emoji-btn">👎</button>
+                </div>
+            `;
+
+            // Add event listeners to the new post
+            const likeBtn = postElement.querySelector('.like-btn');
+            likeBtn.addEventListener('click', function () {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    this.style.color = '#FF6B6B';
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    this.style.color = '';
+                }
+            });
+
+            const emojiBtns = postElement.querySelectorAll('.emoji-btn');
+            emojiBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    this.classList.toggle('active');
+                    if (this.classList.contains('active')) {
+                        this.style.transform = 'scale(1.3)';
+                        this.style.backgroundColor = '#B0E0E6';
+                    } else {
+                        this.style.transform = '';
+                        this.style.backgroundColor = '';
+                    }
+                });
+            });
+
+            // Add the new post to the top of the feed
+            const feed = document.querySelector('.feed');
+            feed.insertBefore(postElement, feed.childNodes[1]);
+        }
+    </script>
+</body>
+
+</html>

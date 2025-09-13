@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Presentime — Improved</title>
+  <link rel="icon" href="logo.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --bg:#f5f7fa; --card:#fff; --primary:#2b9bd7; --accent:#ff6b6b; --muted:#7d8a93; --shadow:0 6px 18px rgba(15,23,42,0.06);
+      --radius:12px; --maxwidth:1100px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; background:var(--bg); color:#123;}
+
+    .wrap{max-width:var(--maxwidth); margin:24px auto; padding:12px;}
+
+    /* Header */
+    header.site{background:linear-gradient(90deg,var(--primary),#67b7e8); color:#fff; border-radius:16px; padding:12px; box-shadow:var(--shadow)}
+    .site .inner{display:flex;gap:12px; align-items:center}
+    .brand{display:flex;gap:12px;align-items:center;font-weight:700}
+    .brand img{width:44px;height:44px;border-radius:10px;object-fit:cover}
+    .search{flex:1}
+    .search input{width:100%;padding:10px 14px;border-radius:999px;border:none}
+    .nav-actions{display:flex;gap:8px;align-items:center}
+    .btn{background:rgba(255,255,255,0.12);border:0;padding:8px 12px;border-radius:10px;color:#fff;cursor:pointer}
+
+    /* layout */
+    .layout{display:grid;grid-template-columns:260px 1fr 300px; gap:18px; margin-top:18px}
+    .col{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+
+    /* responsive grid */
+    @media (max-width:1100px){ .layout{grid-template-columns:1fr} .col.right, .col.left{order:2} .col.center{order:1} }
+
+    /* profile card */
+    .profile{display:flex;gap:12px;align-items:center}
+    .avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;border:4px solid rgba(43,155,215,0.14)}
+    .pinfo h3{margin:0} .pinfo p{margin:4px 0;color:var(--muted);font-size:14px}
+    .stats{display:flex;gap:10px;margin-top:12px}
+    .stat{background:#f8fbff;padding:8px 10px;border-radius:10px;font-size:13px}
+
+    /* feed */
+    .composer textarea{width:100%;min-height:96px;border-radius:10px;padding:10px;border:1px solid #e6eef6}
+    .composer .row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:8px}
+    .visibility{display:flex;gap:8px}
+    .visibility button{padding:6px 10px;border-radius:999px;border:1px solid #e6eef6;background:#fff;cursor:pointer}
+    .visibility button.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+    .post{margin-top:14px;padding:14px;border-radius:12px;box-shadow:0 3px 12px rgba(15,23,42,0.04);background:var(--card)}
+    .post .head{display:flex;gap:12px;align-items:center}
+    .post .meta{flex:1}
+    .post .content{margin-top:10px;line-height:1.5}
+    .post .tags{display:flex;gap:8px;margin-top:10px}
+    .post .tag{background:#eef6fb;padding:5px 10px;border-radius:999px;font-size:13px;color:var(--primary)}
+    .post .actions{display:flex;gap:8px;margin-top:12px}
+    .action{padding:8px 10px;border-radius:8px;border:1px solid #f1f4f7;background:#fff;cursor:pointer;font-size:14px}
+
+    /* small screens */
+    @media (max-width:520px){ .brand span{display:none} .avatar{width:56px;height:56px} .layout{gap:10px} .profile .pinfo p{font-size:13px} }
+
+    /* profile full view (overlay) */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:200}
+    .overlay .panel{width:920px;max-width:95%;max-height:95%;overflow:auto;padding:18px;border-radius:14px;background:var(--card)}
+
+    /* utilities */
+    .muted{color:var(--muted)}
+    .tiny{font-size:13px}
+    .hidden{display:none}
+    a.link{color:var(--primary);text-decoration:none}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site">
+      <div class="inner">
+        <div class="brand"><img src="https://picsum.photos/seed/logo/200/200" alt="logo"><span>Presentime</span></div>
+        <div class="search"><input id="site-search" placeholder="Search posts, people or tags"></div>
+        <div class="nav-actions">
+          <button id="btn-profile" class="btn"><i class="fas fa-user"></i></button>
+          <button id="btn-login" class="btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="col left" id="left-col">
+        <div class="profile card">
+          <img id="sidebar-avatar" class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="avatar">
+          <div class="pinfo">
+            <h3 id="sidebar-name">Guest</h3>
+            <p id="sidebar-title" class="muted">Not signed in</p>
+            <div class="stats">
+              <div class="stat"><strong id="stat-posts">0</strong><div class="tiny muted">posts</div></div>
+              <div class="stat"><strong id="stat-followers">0</strong><div class="tiny muted">followers</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px">
+          <h4 class="tiny muted">Shortcuts</h4>
+          <ul style="list-style:none;padding:0;margin-top:8px">
+            <li><a href="#feed" class="link">Home feed</a></li>
+            <li><a href="#profile" class="link" id="left-link-profile">My profile</a></li>
+            <li><a href="#discover" class="link">Discover</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <section class="col center" id="center-col">
+        <div class="composer">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <img id="composer-avatar" class="avatar" style="width:56px;height:56px" src="https://randomuser.me/api/portraits/men/32.jpg">
+            <div style="flex:1">
+              <textarea id="post-text" placeholder="Share something... (use #tags)" ></textarea>
+              <div class="row">
+                <div class="visibility" id="visibility-buttons">
+                  <button data-vis="public" class="active"><i class="fas fa-globe"></i> Public</button>
+                  <button data-vis="private"><i class="fas fa-lock"></i> Private</button>
+                </div>
+                <div>
+                  <button id="btn-post" class="btn">Post</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="feed-list">
+          <!-- posts injected here -->
+        </div>
+      </section>
+
+      <aside class="col right" id="right-col">
+        <div>
+          <h4>Trending tags</h4>
+          <div id="trending" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
+        </div>
+
+        <div style="margin-top:16px">
+          <h4>People</h4>
+          <div id="people-list" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- overlay profile view -->
+    <div class="overlay" id="overlay">
+      <div class="panel" id="profile-panel">
+        <!-- content injected -->
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /*
+      Improved single-file app that:
+      - Is responsive
+      - Uses localStorage as a simple database (users, posts)
+      - Supports login/signup, profile public/private views
+      - Posts can be created, edited, deleted; visibility toggled
+      - Own profile shows private + public posts; public profiles only show public posts
+      - Provides guidance in comments on how to connect a real DB (Firebase / Supabase)
+    */
+
+    // ---------- Simple data layer (localStorage) ----------
+    const DB_KEY = 'presentime_db_v1';
+    function defaultDB(){
+      return {
+        users:[
+          {id:1,name:'Dr. Michael Chen',email:'mchen@example.com',password:'password',avatar:'https://randomuser.me/api/portraits/men/32.jpg',title:'Cognitive Psychologist',institution:'Harvard University'},
+          {id:2,name:'Sarah Johnson',email:'sarah@example.com',password:'password',avatar:'https://randomuser.me/api/portraits/women/65.jpg',title:'Energy Researcher',institution:'MIT'}
+        ],
+        posts:[
+          {id:1,userId:1,content:'Just published... #Neuroscience #Aging',visibility:'public',tags:['Neuroscience','Aging'],likes:42,comments:2,shares:0,createdAt:Date.now()-3600*1000},
+          {id:2,userId:2,content:'Preliminary results in battery storage. #Energy',visibility:'private',tags:['Energy'],likes:10,comments:1,shares:0,createdAt:Date.now()-86400*1000}
+        ],
+        currentUserId: null
+      }
+    }
+
+    function readDB(){
+      const raw = localStorage.getItem(DB_KEY);
+      if(!raw){ const d=defaultDB(); localStorage.setItem(DB_KEY,JSON.stringify(d)); return d; }
+      return JSON.parse(raw);
+    }
+    function writeDB(db){ localStorage.setItem(DB_KEY,JSON.stringify(db)); }
+
+    let db = readDB();
+
+    // ---------- Helpers ----------
+    function byId(id){ return db.users.find(u=>u.id===id) }
+    function formatTime(ts){ const d=new Date(ts); return d.toLocaleString(); }
+    function extractTags(text){ const re=/#(\w+)/g; const out=[]; let m; while((m=re.exec(text))){ out.push(m[1]); } return out; }
+
+    // ---------- UI elements ----------
+    const feedList = document.getElementById('feed-list');
+    const trending = document.getElementById('trending');
+    const peopleList = document.getElementById('people-list');
+    const sidebarName = document.getElementById('sidebar-name');
+    const sidebarTitle = document.getElementById('sidebar-title');
+    const sidebarAvatar = document.getElementById('sidebar-avatar');
+    const composerAvatar = document.getElementById('composer-avatar');
+    const statPosts = document.getElementById('stat-posts');
+    const statFollowers = document.getElementById('stat-followers');
+
+    const overlay = document.getElementById('overlay');
+    const profilePanel = document.getElementById('profile-panel');
+
+    // login actions
+    const btnLogin = document.getElementById('btn-login');
+    const btnProfile = document.getElementById('btn-profile');
+
+    // init
+    function init(){
+      renderUI();
+      bindEvents();
+    }
+
+    function currentUser(){ return db.users.find(u=>u.id===db.currentUserId) || null }
+
+    function renderUI(){
+      // sidebar user info
+      const cu = currentUser();
+      if(cu){ sidebarName.textContent = cu.name; sidebarTitle.textContent = cu.title + ' • ' + cu.institution; sidebarAvatar.src = cu.avatar; composerAvatar.src = cu.avatar; btnLogin.textContent = 'Logout'; btnLogin.classList.add('btn'); }
+      else { sidebarName.textContent='Guest'; sidebarTitle.textContent='Not signed in'; sidebarAvatar.src='https://picsum.photos/seed/guest/200'; composerAvatar.src='https://picsum.photos/seed/guest/200'; btnLogin.innerHTML='<i class="fas fa-sign-in-alt"></i> Login'; }
+
+      // stats
+      statPosts.textContent = db.posts.filter(p=> p.userId === (cu?cu.id:0)).length || 0;
+      // followers demo value
+      statFollowers.textContent = Math.floor(Math.random()*200);
+
+      renderFeed(); renderTrending(); renderPeople();
+    }
+
+    // ---------- Feed rendering with visibility logic ----------
+    function renderFeed(){
+      feedList.innerHTML='';
+      // show posts sorted by date desc
+      const cu = currentUser();
+      const posts = [...db.posts].sort((a,b)=>b.createdAt - a.createdAt);
+      for(const post of posts){
+        // visibility: if private and not owned by current user, skip
+        if(post.visibility === 'private' && (!cu || cu.id !== post.userId)) continue;
+        const user = byId(post.userId);
+        const el = document.createElement('div'); el.className='post';
+        el.innerHTML = `
+          <div class="head">
+            <img src="${user.avatar}" class="avatar" style="width:48px;height:48px">
+            <div class="meta">
+              <div style="display:flex;align-items:center;gap:8px"><strong>${user.name}</strong> <span class="tiny muted">${user.title || ''}</span></div>
+              <div class="tiny muted">${formatTime(post.createdAt)} · <i class="fas ${post.visibility==='public'?'fa-globe':'fa-lock'}"></i></div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="action" data-action="view-profile" data-user="${user.id}"><i class="fas fa-user"></i></button>
+              ${cu && cu.id===user.id ? `<button class="action" data-action="edit-post" data-id="${post.id}"><i class="fas fa-edit"></i></button><button class="action" data-action="delete-post" data-id="${post.id}"><i class="fas fa-trash"></i></button>`:''}
+            </div>
+          </div>
+          <div class="content">${escapeHtml(post.content)}</div>
+          <div class="tags">${(post.tags||[]).map(t=>`<div class="tag">#${t}</div>`).join('')}</div>
+          <div class="actions">
+            <button class="action" data-action="like" data-id="${post.id}"><i class="fas fa-heart"></i> ${post.likes || 0}</button>
+            <button class="action" data-action="toggle-visibility" data-id="${post.id}">${post.visibility==='public'?'Make private':'Make public'}</button>
+          </div>
+        `;
+        feedList.appendChild(el);
+      }
+    }
+
+    // ---------- People and trending ----------
+    function renderPeople(){
+      peopleList.innerHTML='';
+      for(const u of db.users){
+        const r = document.createElement('div'); r.style.display='flex'; r.style.alignItems='center'; r.style.gap='10px';
+        r.innerHTML = `<img src="${u.avatar}" style="width:42px;height:42px;border-radius:50%"><div style="flex:1"><strong>${u.name}</strong><div class="tiny muted">${u.title}</div></div><button class="action" data-action="view-profile" data-user="${u.id}">View</button>`;
+        peopleList.appendChild(r);
+      }
+    }
+
+    function renderTrending(){
+      const counts = {};
+      db.posts.forEach(p=> (p.tags||[]).forEach(t=> counts[t]=(counts[t]||0)+1));
+      const ordered = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
+      trending.innerHTML = ordered.slice(0,8).map(t=>`<a href="#tag-${t}" class="tag">#${t}</a>`).join(' ');
+    }
+
+    // ---------- Events ----------
+    function bindEvents(){
+      document.getElementById('btn-post').addEventListener('click', onCreatePost);
+      document.getElementById('site-search').addEventListener('input', onSearch);
+      btnLogin.addEventListener('click', onLoginLogout);
+      btnProfile.addEventListener('click', ()=> openProfile(currentUser()? currentUser().id : null) );
+
+      feedList.addEventListener('click', onFeedClick);
+      overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeOverlay(); });
+
+      // delegate visibility buttons
+      document.getElementById('visibility-buttons').addEventListener('click', (e)=>{
+        if(e.target.closest('button')){
+          document.querySelectorAll('#visibility-buttons button').forEach(b=>b.classList.remove('active'));
+          e.target.closest('button').classList.add('active');
+        }
+      });
+
+      // keyboard: quick post with Ctrl+Enter
+      document.addEventListener('keydown',(e)=>{ if(e.ctrlKey && e.key==='Enter'){ onCreatePost(); } });
+
+      // deep link for profiles e.g. #profile:2
+      window.addEventListener('hashchange', handleHash);
+      handleHash();
+    }
+
+    function onSearch(e){ const q=e.target.value.toLowerCase(); const nodes=feedList.querySelectorAll('.post'); nodes.forEach(n=>{ n.style.display = n.textContent.toLowerCase().includes(q)?'block':'none'; }); }
+
+    function onLoginLogout(){ const cu = currentUser(); if(cu){ // logout
+      db.currentUserId = null; writeDB(db); renderUI(); alert('Logged out');
+    } else {
+      showLoginForm();
+    } }
+
+    // ---------- Create / Edit Post ----------
+    function onCreatePost(){ const cu=currentUser(); if(!cu){ if(confirm('You must login to post. Go to login?')) showLoginForm(); return; }
+      const text = document.getElementById('post-text').value.trim(); if(!text) return alert('Write something');
+      const vis = document.querySelector('#visibility-buttons button.active').dataset.vis || 'public';
+      const tags = extractTags(text);
+      const newPost = { id: Date.now(), userId:cu.id, content:text, visibility:vis, tags:tags, likes:0, comments:0, shares:0, createdAt:Date.now() };
+      db.posts.unshift(newPost); writeDB(db); document.getElementById('post-text').value=''; renderUI();
+    }
+
+    function onFeedClick(e){ const btn = e.target.closest('button'); if(!btn) return; const action = btn.dataset.action; const id = btn.dataset.id; if(action==='view-profile'){ openProfile(Number(btn.dataset.user)); }
+      if(action==='like'){ const post = db.posts.find(p=>p.id==id); if(post){ post.likes = (post.likes||0)+1; writeDB(db); renderFeed(); } }
+      if(action==='toggle-visibility'){ const post = db.posts.find(p=>p.id==id); if(!post) return; const cu=currentUser(); if(!cu || cu.id!==post.userId) return alert('Only owner can change visibility'); post.visibility = post.visibility==='public'?'private':'public'; writeDB(db); renderFeed(); }
+      if(action==='delete-post'){ if(!confirm('Delete post?')) return; db.posts = db.posts.filter(p=>p.id!=id); writeDB(db); renderFeed(); }
+      if(action==='edit-post'){ const post = db.posts.find(p=>p.id==id); if(!post) return; showEditPostModal(post); }
+    }
+
+
+    // ---------- Profile overlay ----------
+    function openProfile(userId){
+      // if userId null -> open own profile or login
+      if(!userId){ if(!currentUser()){ showLoginForm(); return } userId = currentUser().id }
+      const user = byId(Number(userId)); if(!user){ alert('User not found'); return }
+      profilePanel.innerHTML = '';
+      const isOwner = currentUser() && currentUser().id === user.id;
+
+      const header = document.createElement('div'); header.style.display='flex'; header.style.gap='12px'; header.innerHTML = `
+        <img src="${user.avatar}" style="width:96px;height:96px;border-radius:12px;object-fit:cover">
+        <div style="flex:1">
+          <h2>${user.name}</h2>
+          <div class="muted">${user.title} • ${user.institution}</div>
+          ${isOwner?'<div style="margin-top:10px"><button class="btn" id="edit-profile">Edit profile</button></div>':''}
+        </div>
+      `;
+      profilePanel.appendChild(header);
+
+      const postsWrap = document.createElement('div'); postsWrap.style.marginTop='12px';
+      postsWrap.innerHTML = '<h3>Posts</h3>';
+      const list = document.createElement('div');
+      const posts = db.posts.filter(p=> p.userId===user.id ).sort((a,b)=>b.createdAt - a.createdAt);
+      for(const p of posts){ if(p.visibility==='private' && !isOwner) continue; const item = document.createElement('div'); item.className='post'; item.style.marginTop='8px'; item.innerHTML=`<div style="display:flex;justify-content:space-between"><div>${escapeHtml(p.content)}</div><div><div class="tiny muted">${formatTime(p.createdAt)}</div>${isOwner?`<div style="margin-top:8px"><button class="action" data-action="edit-post" data-id="${p.id}">Edit</button><button class="action" data-action="delete-post" data-id="${p.id}">Delete</button></div>`:''}</div></div>`; list.appendChild(item); }
+      postsWrap.appendChild(list);
+      profilePanel.appendChild(postsWrap);
+
+      // show overlay
+      overlay.style.display='flex';
+
+      // bind edit profile
+      const editBtn = document.getElementById('edit-profile'); if(editBtn){ editBtn.addEventListener('click', ()=> showEditProfileModal(user)); }
+
+      // delegate post action buttons
+      list.addEventListener('click', (e)=>{ const b=e.target.closest('button'); if(!b) return; const act=b.dataset.action; const id=b.dataset.id; if(act==='edit-post'){ const p=db.posts.find(x=>x.id==id); showEditPostModal(p); } if(act==='delete-post'){ if(confirm('Delete?')){ db.posts = db.posts.filter(x=>x.id!=id); writeDB(db); openProfile(user.id); renderUI(); } } });
+    }
+    function closeOverlay(){ overlay.style.display='none'; profilePanel.innerHTML=''; }
+
+    // ---------- Modals (login/signup/edit) implemented as prompt dialogs for brevity ----------
+    function showLoginForm(){
+      const email = prompt('Email:'); if(!email) return; const password = prompt('Password:');
+      const user = db.users.find(u=>u.email===email && u.password===password);
+      if(user){ db.currentUserId = user.id; writeDB(db); renderUI(); alert('Welcome '+user.name); } else {
+        if(confirm('Not found. Create account?')){
+          const name = prompt('Full name'); if(!name) return; const pass = prompt('Choose password');
+          const avatar = 'https://randomuser.me/api/portraits/men/'+Math.floor(Math.random()*80)+'.jpg';
+          const newUser = { id: Date.now(), name:name, email:email, password:pass, avatar:avatar, title:'Researcher', institution:'University' };
+          db.users.push(newUser); db.currentUserId = newUser.id; writeDB(db); renderUI(); alert('Account created');
+        }
+      }
+    }
+
+    function showEditProfileModal(user){
+      const name = prompt('Full name', user.name); if(name===null) return; const title = prompt('Title', user.title); if(title===null) return; const inst = prompt('Institution', user.institution); if(inst===null) return;
+      user.name=name; user.title=title; user.institution=inst; writeDB(db); renderUI(); openProfile(user.id);
+    }
+
+    function showEditPostModal(post){
+      const text = prompt('Edit post text', post.content); if(text===null) return; post.content=text; post.tags = extractTags(text); post.createdAt = Date.now(); writeDB(db); renderUI(); openProfile(post.userId);
+    }
+
+    // ---------- Utilities ----------
+    function escapeHtml(str){ return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+
+    // ---------- Hash handling for deep-links ----------
+    function handleHash(){ const h = location.hash.slice(1); if(!h) return; if(h.startsWith('profile:')){ const id = Number(h.split(':')[1]); openProfile(id); } }
+
+    // start
+    init();
+
+    /*
+      Notes & next steps to use with a real database:
+      - Replace localStorage read/write with API calls (fetch) to your backend (Node/NestJS) or to Supabase/Firebase.
+      - On login/signup, call your auth endpoint and store JWT token in localStorage; include token in requests.
+      - Endpoints needed: GET /posts, POST /posts, PATCH /posts/:id, DELETE /posts/:id, GET /users, PATCH /users/:id, POST /auth/login, POST /auth/signup
+      - For private posts, backend must enforce visibility (do not return private posts unless request made with owner's token).
+
+      If you want, I can:
+      - convert this client to call Supabase (I can output the JS snippets to replace the local DB functions),
+      - or create a simple Node.js + SQLite example API that this page can call.
+    */
+
+  </script>
+</body>
+</html>

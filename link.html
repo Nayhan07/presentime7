@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentime</title>
+    <link rel="icon" type="image" href="logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #5292ce, #6868e0);
+            color: #e0e0ff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color:skyblue;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #121213;
+            margin-bottom: 30px;
+        }
+        
+        .cityscape {
+            height: 200px;
+            position: relative;
+            margin: 40px 0;
+            border-bottom: 2px solid #33335a;
+            overflow: hidden;
+        }
+        
+        .building {
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(to top, #151530, #2a2a4a);
+            border: 1px solid #4a4a8a;
+            border-bottom: none;
+        }
+        
+        .building::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(to bottom, #303060, #151530);
+        }
+        
+        .window {
+            position: absolute;
+            background-color: #ffff00;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 0, 0.8);
+            border-radius: 1px;
+        }
+        
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 50px;
+        }
+        
+        .social-card {
+            background: linear-gradient(to bottom, #1a1a3a, #0f0f2a);
+            border: 1px solid #d0d0db;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .social-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 100, 255, 0.5);
+            border-color: #e6e6ec;
+        }
+        
+        .social-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #e9eef0, #e7e3e7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .social-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .social-desc {
+            font-size: 0.9rem;
+            color: #e9e9f0;
+            margin-bottom: 15px;
+        }
+        
+        .connect-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: linear-gradient(45deg, #3366ff, #9933ff);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .connect-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(100, 100, 255, 0.7);
+        }
+        
+        .electric-line {
+            position: absolute;
+            background: linear-gradient(to right, #00ffff, #ff00ff);
+            height: 2px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            z-index: -1;
+            transform-origin: left center;
+        }
+        
+        .pulse {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #00ffff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px rgba(0, 255, 255, 0.8);
+            z-index: 10;
+        }
+        
+        .energy-node {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #00ffff, transparent 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 20px 5px rgba(0, 255, 255, 0.6);
+            z-index: 5;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            color: #6666aa;
+            border-top: 1px solid #33335a;
+        }
+        
+        @media (max-width: 768px) {
+            .social-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Connection</h1>
+            <p class="subtitle"></p>
+        </header>
+        
+        <div class="cityscape" id="cityscape">
+            <!-- Buildings and electric lines will be generated by JavaScript -->
+        </div>
+        
+        <div class="social-grid" id="social-grid">
+            <!-- Social media cards will be generated by JavaScript -->
+        </div>
+    </div>
+    
+    <footer>
+        <p>Electric City Social Hub &copy; 2023 | Connect to the digital world</p>
+    </footer>
+
+    <script>
+        // Social media data
+        const socialPlatforms = [
+            { name: "Facebook", icon: "fab fa-facebook", color: "#3b5998" },
+            { name: "Twitter", icon: "fab fa-twitter", color: "#1da1f2" },
+            { name: "Instagram", icon: "fab fa-instagram", color: "#e4405f" },
+            { name: "LinkedIn", icon: "fab fa-linkedin", color: "#0077b5" },
+            { name: "YouTube", icon: "fab fa-youtube", color: "#ff0000" },
+            { name: "Pinterest", icon: "fab fa-pinterest", color: "#bd081c" },
+            { name: "Snapchat", icon: "fab fa-snapchat", color: "#fffc00" },
+            { name: "TikTok", icon: "fab fa-tiktok", color: "#000000" },
+            { name: "Reddit", icon: "fab fa-reddit", color: "#ff4500" },
+            { name: "WhatsApp", icon: "fab fa-whatsapp", color: "#25d366" },
+            { name: "Discord", icon: "fab fa-discord", color: "#7289da" },
+            { name: "Twitch", icon: "fab fa-twitch", color: "#9146ff" },
+            { name: "Telegram", icon: "fab fa-telegram", color: "#0088cc" },
+            { name: "Spotify", icon: "fab fa-spotify", color: "#1db954" },
+            { name: "Apple Music", icon: "fab fa-apple", color: "#fa243c" },
+            { name: "SoundCloud", icon: "fab fa-soundcloud", color: "#ff7700" },
+            { name: "Dribbble", icon: "fab fa-dribbble", color: "#ea4c89" },
+            { name: "Behance", icon: "fab fa-behance", color: "#1769ff" },
+            { name: "GitHub", icon: "fab fa-github", color: "#333333" },
+            { name: "GitLab", icon: "fab fa-gitlab", color: "#fc6d26" },
+            { name: "Stack Overflow", icon: "fab fa-stack-overflow", color: "#f48024" },
+            { name: "Medium", icon: "fab fa-medium", color: "#000000" },
+            { name: "Slack", icon: "fab fa-slack", color: "#4a154b" },
+            { name: "WordPress", icon: "fab fa-wordpress", color: "#21759b" },
+            { name: "Vimeo", icon: "fab fa-vimeo", color: "#1ab7ea" },
+            { name: "Flickr", icon: "fab fa-flickr", color: "#0063dc" },
+            { name: "Tumblr", icon: "fab fa-tumblr", color: "#35465c" },
+            { name: "Quora", icon: "fab fa-quora", color: "#a82400" },
+            { name: "Goodreads", icon: "fab fa-goodreads", color: "#553b08" },
+            { name: "Xing", icon: "fab fa-xing", color: "#006567" }
+        ];
+
+        // Generate social media cards
+        const socialGrid = document.getElementById('social-grid');
+        
+        socialPlatforms.forEach(platform => {
+            const card = document.createElement('div');
+            card.className = 'social-card';
+            card.innerHTML = `
+                <div class="social-icon">
+                    <i class="${platform.icon}"></i>
+                </div>
+                <h3 class="social-name">${platform.name}</h3>
+                <p class="social-desc">Connect to our ${platform.name} channel</p>
+                <button class="connect-btn">Connect</button>
+            `;
+            socialGrid.appendChild(card);
+        });
+
+        // Generate cityscape with buildings
+        const cityscape = document.getElementById('cityscape');
+        
+        for (let i = 0; i < 15; i++) {
+            const building = document.createElement('div');
+            building.className = 'building';
+            
+            // Random building properties
+            const width = Math.floor(Math.random() * 60) + 40;
+            const height = Math.floor(Math.random() * 150) + 50;
+            const left = Math.floor(Math.random() * 95);
+            
+            building.style.width = `${width}px`;
+            building.style.height = `${height}px`;
+            building.style.left = `${left}%`;
+            
+            // Add windows to the building
+            const windowCount = Math.floor((width * height) / 500);
+            for (let w = 0; w < windowCount; w++) {
+                const window = document.createElement('div');
+                window.className = 'window';
+                
+                const windowSize = Math.floor(Math.random() * 5) + 4;
+                const windowLeft = Math.floor(Math.random() * (width - windowSize - 10)) + 5;
+                const windowTop = Math.floor(Math.random() * (height - windowSize - 30)) + 20;
+                
+                window.style.width = `${windowSize}px`;
+                window.style.height = `${windowSize}px`;
+                window.style.left = `${windowLeft}px`;
+                window.style.top = `${windowTop}px`;
+                
+                // Randomly light up some windows
+                if (Math.random() > 0.7) {
+                    window.style.opacity = '0.8';
+                } else {
+                    window.style.opacity = '0.3';
+                }
+                
+                building.appendChild(window);
+            }
+            
+            cityscape.appendChild(building);
+        }
+
+        // Create electric connections between elements
+        function createElectricFlow() {
+            // Clear any existing electric elements
+            document.querySelectorAll('.electric-line, .pulse, .energy-node').forEach(el => el.remove());
+            
+            // Create energy nodes
+            for (let i = 0; i < 8; i++) {
+                const node = document.createElement('div');
+                node.className = 'energy-node';
+                node.style.left = `${Math.random() * 100}%`;
+                node.style.top = `${Math.random() * 100}%`;
+                cityscape.appendChild(node);
+            }
+            
+            // Create electric pulses
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const pulse = document.createElement('div');
+                    pulse.className = 'pulse';
+                    
+                    // Start from a random building window
+                    const windows = document.querySelectorAll('.window');
+                    const startWindow = windows[Math.floor(Math.random() * windows.length)];
+                    const startRect = startWindow.getBoundingClientRect();
+                    const cityRect = cityscape.getBoundingClientRect();
+                    
+                    const startX = startRect.left + startRect.width/2 - cityRect.left;
+                    const startY = startRect.top + startRect.height/2 - cityRect.top;
+                    
+                    pulse.style.left = `${startX}px`;
+                    pulse.style.top = `${startY}px`;
+                    
+                    cityscape.appendChild(pulse);
+                    
+                    // Animate to a random destination (another window or social card)
+                    let endX, endY;
+                    
+                    if (Math.random() > 0.5) {
+                        // Go to another window
+                        const endWindow = windows[Math.floor(Math.random() * windows.length)];
+                        const endRect = endWindow.getBoundingClientRect();
+                        endX = endRect.left + endRect.width/2 - cityRect.left;
+                        endY = endRect.top + endRect.height/2 - cityRect.top;
+                    } else {
+                        // Go to a social card
+                        const cards = document.querySelectorAll('.social-card');
+                        const card = cards[Math.floor(Math.random() * cards.length)];
+                        const cardRect = card.getBoundingClientRect();
+                        endX = cardRect.left + cardRect.width/2 - cityRect.left;
+                        endY = cardRect.top - cityRect.top;
+                    }
+                    
+                    // Create electric line
+                    const line = document.createElement('div');
+                    line.className = 'electric-line';
+                    
+                    const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+                    const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+                    
+                    line.style.width = `${length}px`;
+                    line.style.left = `${startX}px`;
+                    line.style.top = `${startY}px`;
+                    line.style.transform = `rotate(${angle}deg)`;
+                    line.style.opacity = '0';
+                    
+                    cityscape.appendChild(line);
+                    
+                    // Animate the pulse along the line
+                    const animationDuration = 2000 + Math.random() * 2000;
+                    
+                    pulse.animate([
+                        { transform: 'translate(0, 0)', opacity: 1 },
+                        { transform: `translate(${endX - startX}px, ${endY - startY}px)`, opacity: 0 }
+                    ], {
+                        duration: animationDuration,
+                        easing: 'linear'
+                    });
+                    
+                    // Animate the line appearing and disappearing
+                    line.animate([
+                        { opacity: 0, width: '0px' },
+                        { opacity: 0.8, width: `${length}px` },
+                        { opacity: 0, width: `${length}px` }
+                    ], {
+                        duration: animationDuration,
+                        easing: 'ease-out'
+                    });
+                    
+                    // Remove elements after animation
+                    setTimeout(() => {
+                        pulse.remove();
+                        line.remove();
+                    }, animationDuration);
+                    
+                }, i * 1000);
+            }
+        }
+
+        // Initialize and create continuous electric flow
+        createElectricFlow();
+        setInterval(createElectricFlow, 6000);
+
+        // Add interactivity to connect buttons
+        document.querySelectorAll('.connect-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const platform = this.parentElement.querySelector('.social-name').textContent;
+                this.textContent = 'Connecting...';
+                this.style.background = 'linear-gradient(45deg, #00cc00, #00ff00)';
+                
+                setTimeout(() => {
+                    this.textContent = 'Connected!';
+                    this.style.background = 'linear-gradient(45deg, #00cc00, #00ff00)';
+                    
+                    // Create a special electric pulse to this button
+                    createConnectionPulse(this);
+                }, 1500);
+            });
+        });
+
+        // Create a special connection pulse animation
+        function createConnectionPulse(button) {
+            const buttonRect = button.getBoundingClientRect();
+            const cityRect = cityscape.getBoundingClientRect();
+            
+            const endX = buttonRect.left + buttonRect.width/2 - cityRect.left;
+            const endY = buttonRect.top - cityRect.top;
+            
+            // Find a random window to start from
+            const windows = document.querySelectorAll('.window');
+            const startWindow = windows[Math.floor(Math.random() * windows.length)];
+            const startRect = startWindow.getBoundingClientRect();
+            
+            const startX = startRect.left + startRect.width/2 - cityRect.left;
+            const startY = startRect.top + startRect.height/2 - cityRect.top;
+            
+            // Create pulse
+            const pulse = document.createElement('div');
+            pulse.className = 'pulse';
+            pulse.style.left = `${startX}px`;
+            pulse.style.top = `${startY}px`;
+            pulse.style.background = '#00ff00';
+            pulse.style.boxShadow = '0 0 10px 2px rgba(0, 255, 0, 0.8)';
+            
+            cityscape.appendChild(pulse);
+            
+            // Create line
+            const line = document.createElement('div');
+            line.className = 'electric-line';
+            line.style.background = 'linear-gradient(to right, #00ff00, #00ffff)';
+            line.style.boxShadow = '0 0 10px rgba(0, 255, 0, 0.7)';
+            
+            const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+            const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+            
+            line.style.width = `${length}px`;
+            line.style.left = `${startX}px`;
+            line.style.top = `${startY}px`;
+            line.style.transform = `rotate(${angle}deg)`;
+            line.style.opacity = '0';
+            
+            cityscape.appendChild(line);
+            
+            // Animate
+            const animationDuration = 2000;
+            
+            pulse.animate([
+                { transform: 'translate(0, 0)', opacity: 1 },
+                { transform: `translate(${endX - startX}px, ${endY - startY}px)`, opacity: 0 }
+            ], {
+                duration: animationDuration,
+                easing: 'linear'
+            });
+            
+            line.animate([
+                { opacity: 0, width: '0px' },
+                { opacity: 0.8, width: `${length}px` },
+                { opacity: 0, width: `${length}px` }
+            ], {
+                duration: animationDuration,
+                easing: 'ease-out'
+            });
+            
+            // Remove elements after animation
+            setTimeout(() => {
+                pulse.remove();
+                line.remove();
+            }, animationDuration);
+        }
+    </script>
+</body>
+</html>
